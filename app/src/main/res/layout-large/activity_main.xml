@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:background="@drawable/background"
+    android:weightSum="7"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:weightSum="10"
+        android:gravity="bottom"
+        >
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center" >
+            <ToggleButton
+                android:id="@+id/BtnPower"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:checked="false"
+                android:textOff=""
+                android:textOn=""
+                android:adjustViewBounds="true"
+                android:layout_gravity="center"
+                android:background="@drawable/button"/>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_weight="3"
+            android:textAlignment="center"
+            android:gravity="center">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:weightSum="10"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:gravity="center">
+                <SeekBar
+                    android:layout_width="0dp"
+                    android:layout_weight="8"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progress="0"
+                    android:paddingLeft="35dp"
+                    android:paddingRight="35dp"
+                    android:layout_gravity="bottom"
+                    android:progressDrawable="@drawable/progressbar"
+                    android:thumb="@drawable/seekbar_thumb_image"
+                    android:secondaryProgress="0"
+                    android:id="@+id/seekbar"
+                    android:splitTrack="false"/>
+
+                <TextView
+                    android:layout_width="30dp"
+                    android:layout_weight="1.5"
+                    android:text="0%"
+                    android:textSize="30dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/seekbarvalue"
+                    android:gravity="center"
+                    android:textColor="@drawable/seekbarvaluestyles"
+                    android:textAlignment="center" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:clickable="false"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:gravity="center">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center">
+
+            <Space
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"/>
+
+            <Button
+                android:id="@+id/BtnZero"
+                android:layout_width="100dp"
+                android:layout_height="140dp"
+                android:layout_weight="0.2"
+                android:adjustViewBounds="true"
+                android:background="@drawable/btnzero" />
+
+            <Button
+                android:id="@+id/BtnHalf"
+                android:layout_width="100dp"
+                android:layout_height="140dp"
+                android:layout_weight="0.2"
+                android:adjustViewBounds="true"
+                android:background="@drawable/btnhalf" />
+
+            <Button
+                android:id="@+id/BtnFull"
+                android:layout_width="100dp"
+                android:layout_height="140dp"
+                android:layout_weight="0.2"
+                android:adjustViewBounds="true"
+                android:background="@drawable/btnfull" />
+            <Space
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"/>
+
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:clickable="false"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/BtnSettings"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/settings"
+            android:scaleType="fitEnd" />
+        <Button
+            android:id="@+id/BtnBluetooth"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/btnbluetooth"
+            android:scaleType="fitEnd" />
+    </LinearLayout>
+</LinearLayout>

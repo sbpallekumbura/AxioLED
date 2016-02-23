@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item>
+        <shape>
+            <size
+                android:height="50dp"
+                android:width="50dp" />
+
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+    <item >
+        <bitmap android:src="@drawable/contrast"/>
+    </item>
+    <!--<selector>-->
+        <!--<item android:state_enabled="false"-->
+            <!--android:drawable="@drawable/contrast_disabled" />-->
+        <!--<item android:state_enabled="true"-->
+            <!--android:drawable="@drawable/contrast" />-->
+        <!--<item >-->
+            <!--<bitmap android:src="@drawable/contrast"/>-->
+        <!--</item>-->
+    <!--</selector>-->
+</layer-list>

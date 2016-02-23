@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="button_off">#fea3bb</color>
+    <color name="button_on">#9ae4ff</color>
+    <color name="default_screen_bg">#fea3bb</color>
+    <color name="rounded_container_bg">#ffffff</color>
+    <color name="rounded_container_border">#9ae4ff</color>
+    <color name="light_gray_header_color">#8b8f92</color>
+    <color name="disabled_color">#8b8f92</color>
+    <color name="normal_color">#aae8ff</color>
+</resources>
