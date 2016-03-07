@@ -1,12 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="android.axio.com.axioled" >
+    package="axio.com.axioled" >
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/flash_light"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/MyCustomTheme" >
+
+        <service
+            android:name="axio.com.axioled.BLEConnectionServices.BluetoothLeService"
+            android:enabled="true" />
+
+        <receiver android:name=".OTAFirmwareUpdate.OTAResponseReceiver">
+            <intent-filter>
+                <action android:name="com.cysmart.bluetooth.le.ACTION_OTA_DATA_AVAILABLE" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".BLEStatusReceiver">
+            <intent-filter>
+                <action android:name="com.example.bluetooth.le.ACTION_GATT_DISCONNECTED" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -26,14 +53,8 @@
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="android.axio.com.axioled.MainActivity" />
+                android:value="axio.com.axioled.MainActivity" />
         </activity>
     </application>
-
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
 </manifest>
