@@ -172,7 +172,7 @@ public class ProfileScanningFragment extends Fragment {
                 if(mConnectTimer!=null)
                 mConnectTimer.cancel();
                 mConnectTimerON=false;
-                updateWithNewFragment();
+               // updateWithNewFragment();
             }else if(BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)){
                 /**
                  * Disconnect event.When the connect timer is ON,Reconnect the device
