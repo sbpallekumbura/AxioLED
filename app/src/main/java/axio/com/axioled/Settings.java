@@ -333,8 +333,10 @@ public class Settings extends FragmentActivity implements
      */
     @Override
     public void onBackPressed() {
-
-
+        // Getting the current active fragment
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
     }
 
     @Override

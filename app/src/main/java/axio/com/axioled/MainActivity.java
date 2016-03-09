@@ -25,6 +25,7 @@ import android.view.Gravity;
 import android.graphics.drawable.Drawable;
 import android.app.AlertDialog;
 
+import axio.com.axioled.BLEConnectionServices.BluetoothLeService;
 import axio.com.axioled.CommonUtils.Logger;
 
 public class MainActivity extends Activity {
@@ -67,6 +68,17 @@ public class MainActivity extends Activity {
         setBluetoothStatusforBtnBluetooth(_bluetoothStatus);
     }
 
+    public void set_bluetoothStatus()
+    {
+        if(!_bluetoothAdapter.isEnabled())
+        {
+            set_bluetoothStatus(false);
+        }
+        else {
+            set_bluetoothStatus(true);
+        }
+    }
+
 
     SeekBar _seekBar;
     Button _btnSettings;
@@ -92,17 +104,13 @@ public class MainActivity extends Activity {
         _btnZero = (Button) findViewById(R.id.BtnZero);
         _btnHalf = (Button) findViewById(R.id.BtnHalf);
         _btnFull = (Button) findViewById(R.id.BtnFull);
+
+        Enabled(false);
+
         _appState=false;
         app_state(_appState);
 
         _bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-      /*  if (!_bluetoothAdapter.isEnabled()) {
-            // A dialog will appear requesting user permission to enable Bluetooth
-            Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBluetoothIntent, ENABLE_BT_REQUEST_CODE);
-        }*/
-
 
             _seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
 
@@ -191,12 +199,10 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.action_exit) {
+        /*if (id == R.id.action_exit) {
             exitApp();
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -247,18 +253,22 @@ public class MainActivity extends Activity {
     }
 
     public void show_msg(String msg) {
-        if (toast != null) {
+    /*    if (toast != null) {
             toast.cancel();
         }
         int duration = Toast.LENGTH_SHORT;
 
         toast = Toast.makeText(context,msg, duration);
         toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 150);
-        toast.show();
+        toast.show();*/
     }
 
     @Override
     public void onBackPressed() {
+        exitApp();
+    }
+
+    public void freezeApp(){
         Log.d("CDA", "onBackPressed Called");
         Intent setIntent = new Intent(Intent.ACTION_MAIN);
         setIntent.addCategory(Intent.CATEGORY_HOME);
@@ -268,36 +278,43 @@ public class MainActivity extends Activity {
 
     public  void exitApp(){
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                context);
-
-        // set title
-        alertDialogBuilder.setTitle("Exit");
-
-        // set dialog message
-        alertDialogBuilder
-                .setMessage("Click yes to exit!")
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                MainActivity.this);
+        builder.setMessage(
+                getResources().getString(R.string.alert_message_exit))
                 .setCancelable(false)
-                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
-                        // if this button is clicked, close
-                        // current activity
-                        finish();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // if this button is clicked, just close
-                        // the dialog box and do nothing
-                        dialog.cancel();
-                    }
-                });
+                .setTitle(getResources().getString(R.string.app_name))
+                .setPositiveButton(
+                        getResources()
+                                .getString(R.string.alert_message_exit_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Finish the current activity
+                                //MainActivity.this.finish();
+                                finishAffinity();
+                                Intent gattServiceIntent = new Intent(getApplicationContext(),
+                                        BluetoothLeService.class);
+                                stopService(gattServiceIntent);
 
-       /* // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
+                            }
+                        })
+                .setNegativeButton(
+                        getResources().getString(
+                                R.string.alert_message_exit_cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Cancel the dialog box
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
 
-        // show it
-        alertDialog.show();*/
+    }
+
+    public void Enabled(boolean result)
+    {
+        _btnPower.setEnabled(result);
     }
 
     public void setBluetoothStatusforBtnBluetooth(boolean s){
@@ -305,6 +322,7 @@ public class MainActivity extends Activity {
     }
     @Override
     protected void onResume() {
+        set_bluetoothStatus();
         // Register the BroadcastReceiver
         registerBroadcastReceiver();
         super.onResume();
