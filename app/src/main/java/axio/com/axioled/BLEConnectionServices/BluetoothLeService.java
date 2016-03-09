@@ -50,11 +50,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import axio.com.axioled.BLEProfileDataParserClasses.DescriptorParser;
 /*
 import com.cypress.cysmart.BLEProfileDataParserClasses.BloodPressureParser;
 import com.cypress.cysmart.BLEProfileDataParserClasses.CSCParser;
 import com.cypress.cysmart.BLEProfileDataParserClasses.CapSenseParser;
-import com.cypress.cysmart.BLEProfileDataParserClasses.DescriptorParser;
+
 import com.cypress.cysmart.BLEProfileDataParserClasses.GlucoseParser;
 import com.cypress.cysmart.BLEProfileDataParserClasses.HRMParser;
 import com.cypress.cysmart.BLEProfileDataParserClasses.HTMParser;
@@ -300,7 +301,6 @@ public class BluetoothLeService extends Service {
             }
         }
 
-        /**sampath
         @Override
         public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor,
                                      int status) {
@@ -375,7 +375,7 @@ public class BluetoothLeService extends Service {
                  * Sending the broad cast so that it can be received on
                  * registered receivers
                  */
-        /*sampath
+
                 mContext.sendBroadcast(intent);
             } else {
                 String dataLog = mContext.getResources().getString(R.string.dl_commaseparator)
@@ -387,7 +387,6 @@ public class BluetoothLeService extends Service {
             }
 
         }
-        sampath*/
 
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic
@@ -431,7 +430,7 @@ public class BluetoothLeService extends Service {
             if (isExitBootloaderCmd)
                 onOtaExitBootloaderComplete(status);
         }
-        /*sampath
+
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic, int status) {
@@ -464,9 +463,7 @@ public class BluetoothLeService extends Service {
                 }
             }
         }
-        sampath*/
 
-        /*sampath
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
@@ -486,7 +483,7 @@ public class BluetoothLeService extends Service {
             Logger.datalog(dataLog);
             broadcastNotifyUpdate(characteristic);
         }
-        sampath*/
+
         @Override
         public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
             Resources res = mContext.getResources();
@@ -560,7 +557,7 @@ public class BluetoothLeService extends Service {
         final Intent intent = new Intent((action));
         mContext.sendBroadcast(intent);
     }
-    /*sampath
+
     private static void broadcastNotifyUpdate(final BluetoothGattCharacteristic characteristic) {
         final Intent intent = new Intent(BluetoothLeService.ACTION_DATA_AVAILABLE);
         Bundle mBundle = new Bundle();
@@ -575,6 +572,8 @@ public class BluetoothLeService extends Service {
                 characteristic.getService().getUuid().toString());
         mBundle.putInt(Constants.EXTRA_BYTE_SERVICE_INSTANCE_VALUE,
                 characteristic.getService().getInstanceId());
+
+        /*sampath
         // Heart rate Measurement notify value
         if (characteristic.getUuid().equals(UUIDDatabase.UUID_HEART_RATE_MEASUREMENT)) {
             String heart_rate = HRMParser.getHeartRate(characteristic);
@@ -860,16 +859,16 @@ public class BluetoothLeService extends Service {
                     SensorHubParser.getThresholdValue(characteristic));
         }
 
-
+    sampath*/
         intent.putExtras(mBundle);
         /**
          * Sending the broad cast so that it can be received on registered
          * receivers
          */
-    /*sampath
+
         mContext.sendBroadcast(intent);
     }
-    sampath*/
+
 
     private static void onOtaExitBootloaderComplete(int status) {
         Bundle bundle = new Bundle();

@@ -172,7 +172,7 @@ public class ProfileScanningFragment extends Fragment {
                 if(mConnectTimer!=null)
                 mConnectTimer.cancel();
                 mConnectTimerON=false;
-                updateWithNewFragment();
+              //sampath  updateWithNewFragment();
             }else if(BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)){
                 /**
                  * Disconnect event.When the connect timer is ON,Reconnect the device
@@ -270,6 +270,7 @@ public class ProfileScanningFragment extends Fragment {
          * updating the datalogger history
          */
         Logger.createDataLoggerFile(getActivity());
+
         mProfileListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {

@@ -92,6 +92,7 @@ public class ServiceDiscoveryFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.servicediscovery_temp_fragment, container, false);
         mNoserviceDiscovered=(TextView)rootView.findViewById(R.id.no_service_text);
         mProgressDialog=new ProgressDialog(getActivity());
