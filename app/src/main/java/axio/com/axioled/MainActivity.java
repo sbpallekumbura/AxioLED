@@ -368,9 +368,9 @@ public class MainActivity extends Activity {
             if(_connected)
             {
                 app_state(true);
+                mReadCharacteristic = mApplication.getBluetoothgattcharacteristic();
             }
         }
-        mReadCharacteristic = mApplication.getBluetoothgattcharacteristic();
 
         super.onResume();
     }
