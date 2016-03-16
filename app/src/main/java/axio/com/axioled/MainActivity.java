@@ -94,6 +94,8 @@ public class MainActivity extends Activity {
 
     Boolean _connected;
 
+    private AxioLEDApplication mApplication;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -368,6 +370,8 @@ public class MainActivity extends Activity {
                 app_state(true);
             }
         }
+        mReadCharacteristic = mApplication.getBluetoothgattcharacteristic();
+
         super.onResume();
     }
 
