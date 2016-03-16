@@ -834,6 +834,8 @@ public class ProfileScanningFragment extends Fragment {
     private static ArrayList<HashMap<String, BluetoothGattService>> mGattServiceMasterData =
             new ArrayList<HashMap<String, BluetoothGattService>>();
 
+    private static ArrayList<HashMap<String, BluetoothGattService>> mModifiedServiceData;
+
     // BluetoothGattService
     private static BluetoothGattService mService;
 
@@ -900,8 +902,20 @@ public class ProfileScanningFragment extends Fragment {
             }
         }
 
+        // Preparing list data
+        // GAP and GATT attributes are not displayed
+        mModifiedServiceData = new ArrayList<HashMap<String, BluetoothGattService>>();
+        for (int i = 0; i < mGattServiceData.size(); i++) {
+            if (!(mGattServiceData.get(i).get("UUID").getUuid()
+                    .equals(UUIDDatabase.UUID_GENERIC_ATTRIBUTE_SERVICE) || mGattServiceData
+                    .get(i).get("UUID").getUuid()
+                    .equals(UUIDDatabase.UUID_GENERIC_ACCESS_SERVICE))) {
+                mModifiedServiceData.add(mGattServiceData.get(i));
+            }
+        }
+
         //mApplication.setGattServiceMasterData(mGattServiceMasterData);
-        if(mGattdbServiceData.size()>0){
+        if(mModifiedServiceData.size()>0){
             ConnectToService(0);
         }else{
             showNoServiceDiscoverAlert();
@@ -917,7 +931,7 @@ public class ProfileScanningFragment extends Fragment {
 
     public void ConnectToService(int pos)
     {
-        mService = mGattdbServiceData.get(pos).get("UUID");
+        mService = mModifiedServiceData.get(pos).get("UUID");
         mGattCharacteristics = mService.getCharacteristics();
 
         mApplication.setGattCharacteristics(mGattCharacteristics);
