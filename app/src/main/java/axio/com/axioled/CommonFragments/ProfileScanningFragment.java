@@ -37,12 +37,16 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -67,18 +71,24 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import axio.com.axioled.AxioLEDApplication;
 import axio.com.axioled.BLEConnectionServices.BluetoothLeService;
 import axio.com.axioled.CommonUtils.Constants;
 import axio.com.axioled.CommonUtils.Logger;
 import axio.com.axioled.CommonUtils.Utils;
+import axio.com.axioled.CommonUtils.UUIDDatabase;
+import axio.com.axioled.CommonUtils.GattAttributes;
+import axio.com.axioled.MainActivity;
 import axio.com.axioled.R;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 public class ProfileScanningFragment extends Fragment {
 
@@ -172,7 +182,7 @@ public class ProfileScanningFragment extends Fragment {
                 if(mConnectTimer!=null)
                 mConnectTimer.cancel();
                 mConnectTimerON=false;
-               // updateWithNewFragment();
+                //onOffLED();
             }else if(BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)){
                 /**
                  * Disconnect event.When the connect timer is ON,Reconnect the device
@@ -804,4 +814,135 @@ public class ProfileScanningFragment extends Fragment {
             }
         }
     }
+
+    /******************************New********************************************/
+    // Application
+    private AxioLEDApplication mApplication;
+    private Timer mTimer;
+    private TextView mNoserviceDiscovered;
+
+    // UUID key
+    private static final String LIST_UUID = "UUID";
+
+    // Gatt Service Data
+    static ArrayList<HashMap<String, BluetoothGattService>> mGattServiceData =
+            new ArrayList<HashMap<String, BluetoothGattService>>();
+    static ArrayList<HashMap<String, BluetoothGattService>> mGattServiceFindMeData =
+            new ArrayList<HashMap<String, BluetoothGattService>>();
+    private static ArrayList<HashMap<String, BluetoothGattService>> mGattdbServiceData =
+            new ArrayList<HashMap<String, BluetoothGattService>>();
+    private static ArrayList<HashMap<String, BluetoothGattService>> mGattServiceMasterData =
+            new ArrayList<HashMap<String, BluetoothGattService>>();
+
+    // BluetoothGattService
+    private static BluetoothGattService mService;
+
+    // GattCharacteristics list
+    private static List<BluetoothGattCharacteristic> mGattCharacteristics;
+
+    private final BroadcastReceiver mServiceDiscoveryListner=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED
+                    .equals(action)) {
+                Logger.e("Service discovered");
+                if(mTimer!=null)
+                    mTimer.cancel();
+                prepareGattServices(BluetoothLeService.getSupportedGattServices());
+
+                /*
+                / Changes the MTU size to 512 in case LOLLIPOP and above devices
+                */
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    BluetoothLeService.exchangeGattMtu(512);
+                }
+            } else if (BluetoothLeService.ACTION_GATT_SERVICE_DISCOVERY_UNSUCCESSFUL
+                    .equals(action)) {
+               //// mProgressDialog.dismiss();
+                if(mTimer!=null)
+                    mTimer.cancel();
+               //// showNoServiceDiscoverAlert();
+            }
+        }
+    };
+
+    private void prepareGattServices(List<BluetoothGattService> gattServices) {
+        // Optimization code for Sensor HUb
+            prepareData(gattServices);
+    }
+
+    private void prepareData(List<BluetoothGattService> gattServices) {
+        boolean mFindmeSet = false;
+        boolean mProximitySet = false;
+        boolean mGattSet = false;
+        if (gattServices == null)
+            return;
+        // Clear all array list before entering values.
+        mGattServiceData.clear();
+        mGattServiceFindMeData.clear();
+        mGattServiceMasterData.clear();
+
+        // Loops through available GATT Services.
+        for (BluetoothGattService gattService : gattServices) {
+            HashMap<String, BluetoothGattService> currentServiceData = new HashMap<String, BluetoothGattService>();
+            UUID uuid = gattService.getUuid();
+            // Optimization code for GATTDB
+            if (uuid.equals(UUIDDatabase.UUID_GENERIC_ACCESS_SERVICE)
+                    || uuid.equals(UUIDDatabase.UUID_GENERIC_ATTRIBUTE_SERVICE)) {
+                currentServiceData.put(LIST_UUID, gattService);
+                mGattdbServiceData.add(currentServiceData);
+                if (!mGattSet) {
+                    mGattSet = true;
+                    mGattServiceData.add(currentServiceData);
+                }
+
+            }
+        }
+
+        //mApplication.setGattServiceMasterData(mGattServiceMasterData);
+        if(mGattdbServiceData.size()>0){
+            ConnectToService(0);
+        }else{
+            showNoServiceDiscoverAlert();
+        }
+
+
+    }
+
+    private void showNoServiceDiscoverAlert() {
+        if(mNoserviceDiscovered!=null)
+            mNoserviceDiscovered.setVisibility(View.VISIBLE);
+    }
+
+    public void ConnectToService(int pos)
+    {
+        mService = mGattdbServiceData.get(pos).get("UUID");
+        mGattCharacteristics = mService.getCharacteristics();
+
+        mApplication.setGattCharacteristics(mGattCharacteristics);
+
+        if(mGattCharacteristics.size()>0){
+            ConnectToCharacteristic(0);
+        }else{
+            //showNoServiceDiscoverAlert();
+        }
+
+    }
+
+    public void ConnectToCharacteristic(int pos){
+        mApplication.setBluetoothgattcharacteristic(mGattCharacteristics
+                .get(pos));
+        // Go to main UI
+            goToMain();
+    }
+
+    public void goToMain() {
+        // Getting the current active fragment
+        Intent intent = new Intent(this.getActivity(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.putExtra("connected",true);
+        startActivity(intent);
+    }
+
 }

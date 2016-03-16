@@ -1,6 +1,6 @@
 /*
  * Copyright Cypress Semiconductor Corporation, 2014-2015 All rights reserved.
- * 
+ *
  * This software, associated documentation and materials ("Software") is
  * owned by Cypress Semiconductor Corporation ("Cypress") and is
  * protected by and subject to worldwide patent protection (UnitedStates and foreign), United States copyright laws and international
@@ -9,7 +9,7 @@
  * modification, translation, compilation, or representation of this
  * Software in any other form (e.g., paper, magnetic, optical, silicon)
  * is prohibited without Cypress's express written permission.
- * 
+ *
  * Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY
  * KIND, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
  * NONINFRINGEMENT, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -23,11 +23,11 @@
  * Cypress's product in a High Risk Product, the manufacturer of such
  * system or application assumes all risk of such use and in doing so
  * indemnifies Cypress against all liability.
- * 
+ *
  * Use of this Software may be limited by and subject to the applicable
  * Cypress software license agreement.
- * 
- * 
+ *
+ *
  */
 
 package axio.com.axioled.CommonFragments;
@@ -60,9 +60,7 @@ import axio.com.axioled.CommonUtils.Utils;
 
 
 import axio.com.axioled.AxioLEDApplication;
-/*sampath
-import axio.com.axioled.ListAdapters.CarouselPagerAdapter;
-sampath*/
+
 import axio.com.axioled.R;
 
 import java.util.ArrayList;
@@ -92,7 +90,7 @@ public class ProfileControlFragment extends Fragment {
     // Base Layout
     private RelativeLayout mRelativeLayout;
     // Adapter for loading data to CarouselView
-    //sampath private CarouselPagerAdapter mAdapter;
+
     private int mWidth = 0;
 
     // Application variable

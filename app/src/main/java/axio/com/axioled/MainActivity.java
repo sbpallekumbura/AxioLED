@@ -3,6 +3,7 @@ package axio.com.axioled;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.IntentFilter;
@@ -27,6 +28,7 @@ import android.app.AlertDialog;
 
 import axio.com.axioled.BLEConnectionServices.BluetoothLeService;
 import axio.com.axioled.CommonUtils.Logger;
+import axio.com.axioled.CommonUtils.Utils;
 
 public class MainActivity extends Activity {
 
@@ -88,6 +90,9 @@ public class MainActivity extends Activity {
     Toast toast=null;
     Context context;
     boolean _appState;
+    int prev_progress,curr_progress;
+
+    Boolean _connected;
 
 
     @Override
@@ -118,8 +123,14 @@ public class MainActivity extends Activity {
             public void onProgressChanged(SeekBar seekBar, int progress,
                                           boolean fromUser) {
                 // TODO Auto-generated method stub
-                _seekBarValue.setText(String.valueOf(progress)+"%");
+                if(curr_progress!=0) {
+                    prev_progress = curr_progress;
+                }
+                curr_progress=progress;
+
+                _seekBarValue.setText(String.valueOf(progress) + "%");
                 change_state_btnExposure(progress);
+
             }
 
             @Override
@@ -151,7 +162,7 @@ public class MainActivity extends Activity {
                     if(_appState) {
                         change_state_btnExposure(_seekBar.getProgress());
                     }
-
+                    onOffLED();
                     String text = String.valueOf((_appState) ? "LED Switch on" : "LED Switch off");
                     show_msg(text);
                 }
@@ -160,7 +171,7 @@ public class MainActivity extends Activity {
              _btnZero.setOnClickListener(new View.OnClickListener() {
             @Override
                 public void onClick(View v) {
-                    show_msg("Contrast set to 25%");
+                show_msg("Contrast set to 25%");
                     _seekBar.setProgress(25);
                     change_state_btnExposure(25);
                 }
@@ -182,6 +193,8 @@ public class MainActivity extends Activity {
                     change_state_btnExposure(100);
                 }
             });
+
+            prev_progress=_seekBar.getProgress();
         }
 
     @Override
@@ -233,6 +246,8 @@ public class MainActivity extends Activity {
         _btnHalf.setBackgroundResource(R.drawable.half_off);
         _btnFull.setBackgroundResource(R.drawable.full_off);
 
+        chage_LED_Britness();
+
         if (_appState) {
             if (progress == 25) {
                 _btnZero.setBackgroundResource(R.drawable.zero_on);
@@ -250,6 +265,25 @@ public class MainActivity extends Activity {
                 _btnFull.setBackgroundResource(R.drawable.full_off_d);
             }
         }
+    }
+
+    public void chage_LED_Britness()
+    {
+        int value=getIncrement();
+        int steps=Math.abs(value)/10;
+        if(Math.signum(value)==1)
+        {
+            increaseBritness(steps);
+        }
+        else if(Math.signum(value)==-1)
+        {
+            decreaseBritness(steps);
+        }
+    }
+
+    public int getIncrement()
+    {
+       return curr_progress-prev_progress;
     }
 
     public void show_msg(String msg) {
@@ -325,6 +359,15 @@ public class MainActivity extends Activity {
         set_bluetoothStatus();
         // Register the BroadcastReceiver
         registerBroadcastReceiver();
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            _connected = extras.getBoolean("connected");
+            if(_connected)
+            {
+                app_state(true);
+            }
+        }
         super.onResume();
     }
 
@@ -342,5 +385,47 @@ public class MainActivity extends Activity {
         intentFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         intentFilter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
         this.registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+
+
+
+    private BluetoothGattCharacteristic mReadCharacteristic;
+
+    public void writeOnDevice(String result) {
+        byte[] convertedBytes = Utils.convertingTobyteArray(result);
+        writeCharaValue(convertedBytes);
+    }
+
+    /**
+     * Method to write the byte value to the characteristic
+     * @param value
+     */
+    private void writeCharaValue(byte[] value) {
+        ////displayTimeandDate();
+        // Writing the hexValue to the characteristic
+        try {
+            BluetoothLeService.writeCharacteristicGattDb(mReadCharacteristic,
+                    value);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onOffLED(){
+        writeOnDevice("0x5");
+    }
+    public void increaseBritness(int steps)
+    {
+        for(int count=0;count<steps;count++) {
+            writeOnDevice("0x4");
+        }
+    }
+    public void decreaseBritness(int steps)
+    {
+        for(int count=0;count<steps;count++) {
+            writeOnDevice("0x2");
+        }
+
     }
 }
