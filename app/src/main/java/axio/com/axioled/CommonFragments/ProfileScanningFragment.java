@@ -224,8 +224,6 @@ public class ProfileScanningFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mApplication=(AxioLEDApplication) getActivity().getApplication();
-
        View mrootView = inflater.inflate(R.layout.fragment_profile_scan, container,
                 false);
         mDevRssiValues = new HashMap<String, Integer>();
