@@ -406,7 +406,7 @@ public class MainActivity extends Activity {
      */
     private void writeCharaValue(byte[] value) {
 
-        mApplication=(AxioLEDApplication)this.getApplication();
+        mApplication=(AxioLEDApplication)getApplication();
         mReadCharacteristic = mApplication.getBluetoothgattcharacteristic();
         ////displayTimeandDate();
         // Writing the hexValue to the characteristic
