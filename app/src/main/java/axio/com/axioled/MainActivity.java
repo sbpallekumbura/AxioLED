@@ -368,7 +368,6 @@ public class MainActivity extends Activity {
             if(_connected)
             {
                 app_state(true);
-                mReadCharacteristic = mApplication.getBluetoothgattcharacteristic();
             }
         }
 
@@ -406,6 +405,8 @@ public class MainActivity extends Activity {
      * @param value
      */
     private void writeCharaValue(byte[] value) {
+
+        mReadCharacteristic = mApplication.getBluetoothgattcharacteristic();
         ////displayTimeandDate();
         // Writing the hexValue to the characteristic
         try {

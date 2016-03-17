@@ -947,7 +947,8 @@ public class ProfileScanningFragment extends Fragment {
     public void ConnectToCharacteristic(int pos){
         mApplication.setBluetoothgattcharacteristic(mGattCharacteristics
                 .get(pos));
-        // Go to main UI
+
+       // Go to main UI
             goToMain();
     }
 
