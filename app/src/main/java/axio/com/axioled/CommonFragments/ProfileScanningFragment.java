@@ -223,6 +223,9 @@ public class ProfileScanningFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        mApplication=(AxioLEDApplication) getActivity().getApplication();
+
        View mrootView = inflater.inflate(R.layout.fragment_profile_scan, container,
                 false);
         mDevRssiValues = new HashMap<String, Integer>();
@@ -817,7 +820,7 @@ public class ProfileScanningFragment extends Fragment {
 
     /******************************New********************************************/
     // Application
-    private AxioLEDApplication mApplication=(AxioLEDApplication) getActivity().getApplication();
+    private AxioLEDApplication mApplication;
     private Timer mTimer;
     private TextView mNoserviceDiscovered;
 
