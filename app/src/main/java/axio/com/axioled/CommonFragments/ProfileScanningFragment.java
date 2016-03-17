@@ -817,7 +817,7 @@ public class ProfileScanningFragment extends Fragment {
 
     /******************************New********************************************/
     // Application
-    private AxioLEDApplication mApplication;
+    private AxioLEDApplication mApplication=(AxioLEDApplication) getActivity().getApplication();
     private Timer mTimer;
     private TextView mNoserviceDiscovered;
 
