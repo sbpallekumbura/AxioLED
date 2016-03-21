@@ -150,7 +150,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         Intent intent=new Intent(MainActivity.this,Settings.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                       // intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(intent);
                     }
                 });
@@ -289,14 +289,14 @@ public class MainActivity extends Activity {
     }
 
     public void show_msg(String msg) {
-    /*    if (toast != null) {
+        if (toast != null) {
             toast.cancel();
         }
         int duration = Toast.LENGTH_SHORT;
 
         toast = Toast.makeText(context,msg, duration);
         toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 150);
-        toast.show();*/
+        toast.show();
     }
 
     @Override
@@ -370,7 +370,6 @@ public class MainActivity extends Activity {
                 app_state(true);
             }
         }
-
         super.onResume();
     }
 

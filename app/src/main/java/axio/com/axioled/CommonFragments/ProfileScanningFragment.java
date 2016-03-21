@@ -54,6 +54,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -832,6 +833,8 @@ public class ProfileScanningFragment extends Fragment {
             new ArrayList<HashMap<String, BluetoothGattService>>();
     static ArrayList<HashMap<String, BluetoothGattService>> mGattServiceFindMeData =
             new ArrayList<HashMap<String, BluetoothGattService>>();
+    static ArrayList<HashMap<String, BluetoothGattService>> mGattServiceProximityData =
+            new ArrayList<HashMap<String, BluetoothGattService>>();
     private static ArrayList<HashMap<String, BluetoothGattService>> mGattdbServiceData =
             new ArrayList<HashMap<String, BluetoothGattService>>();
     private static ArrayList<HashMap<String, BluetoothGattService>> mGattServiceMasterData =
@@ -892,8 +895,34 @@ public class ProfileScanningFragment extends Fragment {
         for (BluetoothGattService gattService : gattServices) {
             HashMap<String, BluetoothGattService> currentServiceData = new HashMap<String, BluetoothGattService>();
             UUID uuid = gattService.getUuid();
-            // Optimization code for GATTDB
-            if (uuid.equals(UUIDDatabase.UUID_GENERIC_ACCESS_SERVICE)
+            // Optimization code for FindMe Profile
+            if (uuid.equals(UUIDDatabase.UUID_IMMEDIATE_ALERT_SERVICE)) {
+                currentServiceData.put(LIST_UUID, gattService);
+                mGattServiceMasterData.add(currentServiceData);
+                if (!mGattServiceFindMeData.contains(currentServiceData)) {
+                    mGattServiceFindMeData.add(currentServiceData);
+                }
+                if (!mFindmeSet) {
+                    mFindmeSet = true;
+                    mGattServiceData.add(currentServiceData);
+                }
+
+            }
+            // Optimization code for Proximity Profile
+            else if (uuid.equals(UUIDDatabase.UUID_LINK_LOSS_SERVICE)
+                    || uuid.equals(UUIDDatabase.UUID_TRANSMISSION_POWER_SERVICE)) {
+                currentServiceData.put(LIST_UUID, gattService);
+                mGattServiceMasterData.add(currentServiceData);
+                if (!mGattServiceProximityData.contains(currentServiceData)) {
+                    mGattServiceProximityData.add(currentServiceData);
+                }
+                if (!mProximitySet) {
+                    mProximitySet = true;
+                    mGattServiceData.add(currentServiceData);
+                }
+
+            }// Optimization code for GATTDB
+            else if (uuid.equals(UUIDDatabase.UUID_GENERIC_ACCESS_SERVICE)
                     || uuid.equals(UUIDDatabase.UUID_GENERIC_ATTRIBUTE_SERVICE)) {
                 currentServiceData.put(LIST_UUID, gattService);
                 mGattdbServiceData.add(currentServiceData);
@@ -902,7 +931,71 @@ public class ProfileScanningFragment extends Fragment {
                     mGattServiceData.add(currentServiceData);
                 }
 
+            } //Optimization code for HID
+            else if (uuid.equals(UUIDDatabase.UUID_HID_SERVICE)){
+                /**
+                 * Special handling for KITKAT devices
+                 */
+                if (android.os.Build.VERSION.SDK_INT < 21) {
+                    Logger.e("Kitkat RDK device found");
+                    List<BluetoothGattCharacteristic> allCharacteristics=
+                            gattService.getCharacteristics();
+                    List<BluetoothGattCharacteristic> RDKCharacteristics=new
+                            ArrayList<BluetoothGattCharacteristic>();
+                    List<BluetoothGattDescriptor> RDKDescriptors=new
+                            ArrayList<BluetoothGattDescriptor>();
+
+
+                    //Find all Report characteristics
+                    for(BluetoothGattCharacteristic characteristic:allCharacteristics){
+                        if(characteristic.getUuid().equals(UUIDDatabase.UUID_REP0RT)){
+                            RDKCharacteristics.add(characteristic);
+                        }
+                    }
+
+                    //Find all Report descriptors
+                    for(BluetoothGattCharacteristic rdkcharacteristic:RDKCharacteristics){
+                        List<BluetoothGattDescriptor> descriptors = rdkcharacteristic.
+                                getDescriptors();
+                        for(BluetoothGattDescriptor descriptor:descriptors){
+                            RDKDescriptors.add(descriptor);
+                        }
+                    }
+                    /**
+                     * Wait for all  descriptors to receive
+                     */
+                    if(RDKDescriptors.size()==RDKCharacteristics.size()*2){
+
+                        for(int pos=0,descPos=0;descPos<RDKCharacteristics.size();pos++,descPos++){
+                            BluetoothGattCharacteristic rdkcharacteristic=
+                                    RDKCharacteristics.get(descPos);
+                            //Mapping the characteristic and descriptors
+                            Logger.e("Pos-->"+pos);
+                            Logger.e("Pos+1-->"+(pos+1));
+                            BluetoothGattDescriptor clientdescriptor=RDKDescriptors.get(pos);
+                            BluetoothGattDescriptor reportdescriptor=RDKDescriptors.get(pos+1);
+                            if(!rdkcharacteristic.getDescriptors().contains(clientdescriptor))
+                                rdkcharacteristic.addDescriptor(clientdescriptor);
+                            if(!rdkcharacteristic.getDescriptors().contains(reportdescriptor))
+                                rdkcharacteristic.addDescriptor(reportdescriptor);
+                            pos++;
+                        }
+                    }
+                    currentServiceData.put(LIST_UUID, gattService);
+                    mGattServiceMasterData.add(currentServiceData);
+                    mGattServiceData.add(currentServiceData);
+                }else{
+                    currentServiceData.put(LIST_UUID, gattService);
+                    mGattServiceMasterData.add(currentServiceData);
+                    mGattServiceData.add(currentServiceData);
+                }
+
+            }else {
+                currentServiceData.put(LIST_UUID, gattService);
+                mGattServiceMasterData.add(currentServiceData);
+                mGattServiceData.add(currentServiceData);
             }
+
         }
 
         // Preparing list data
@@ -919,7 +1012,11 @@ public class ProfileScanningFragment extends Fragment {
 
         //mApplication.setGattServiceMasterData(mGattServiceMasterData);
         if(mModifiedServiceData.size()>0){
-            ConnectToService(0);
+            try {
+                ConnectToService(0);
+            }catch(Exception e){
+                Logger.e(e.getMessage());
+            }
         }else{
             showNoServiceDiscoverAlert();
         }
@@ -940,7 +1037,11 @@ public class ProfileScanningFragment extends Fragment {
         mApplication.setGattCharacteristics(mGattCharacteristics);
 
         if(mGattCharacteristics.size()>0){
-            ConnectToCharacteristic(0);
+            try {
+                ConnectToCharacteristic(0);
+            }catch(Exception e){
+                Logger.e(e.getMessage());
+            }
         }else{
             //showNoServiceDiscoverAlert();
         }
@@ -958,7 +1059,7 @@ public class ProfileScanningFragment extends Fragment {
     public void goToMain() {
         // Getting the current active fragment
         Intent intent = new Intent(this.getActivity(), MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("connected",true);
         startActivity(intent);
     }
