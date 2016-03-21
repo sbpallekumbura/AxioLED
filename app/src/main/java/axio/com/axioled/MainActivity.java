@@ -150,7 +150,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         Intent intent=new Intent(MainActivity.this,Settings.class);
-                       // intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(intent);
                     }
                 });
@@ -361,6 +361,7 @@ public class MainActivity extends Activity {
         set_bluetoothStatus();
         // Register the BroadcastReceiver
         registerBroadcastReceiver();
+
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

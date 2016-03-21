@@ -1057,9 +1057,10 @@ public class ProfileScanningFragment extends Fragment {
     }
 
     public void goToMain() {
+        
         // Getting the current active fragment
         Intent intent = new Intent(this.getActivity(), MainActivity.class);
-        //intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("connected",true);
         startActivity(intent);
     }

@@ -53,7 +53,7 @@ import java.io.OutputStreamWriter;
  */
 public class Logger {
 
-    private static String mLogTag = "CySmart Android";
+    private static String mLogTag = "AxioLED Android";
     private static boolean mLogflag = true;
     private static File mDataLoggerDirectory;
     private static File mDataLoggerFile;
