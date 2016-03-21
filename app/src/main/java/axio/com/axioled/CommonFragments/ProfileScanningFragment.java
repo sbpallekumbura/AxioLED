@@ -183,7 +183,9 @@ public class ProfileScanningFragment extends Fragment {
                 if(mConnectTimer!=null)
                 mConnectTimer.cancel();
                 mConnectTimerON=false;
-                //onOffLED();
+                clearmBluetoothAdapter();
+
+
             }else if(BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)){
                 /**
                  * Disconnect event.When the connect timer is ON,Reconnect the device
@@ -199,6 +201,17 @@ public class ProfileScanningFragment extends Fragment {
             }
         }
     };
+
+    public void clearmBluetoothAdapter(){
+        if (mLeDeviceListAdapter != null) {
+            mLeDeviceListAdapter.clear();
+            try {
+                mLeDeviceListAdapter.notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
     /**
      * Textwatcher for filtering the list devices
      */
@@ -1057,7 +1070,7 @@ public class ProfileScanningFragment extends Fragment {
     }
 
     public void goToMain() {
-        
+
         // Getting the current active fragment
         Intent intent = new Intent(this.getActivity(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
