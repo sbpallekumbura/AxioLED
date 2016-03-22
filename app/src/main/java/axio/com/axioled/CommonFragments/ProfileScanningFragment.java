@@ -184,7 +184,7 @@ public class ProfileScanningFragment extends Fragment {
                 mConnectTimer.cancel();
                 mConnectTimerON=false;
                 clearmBluetoothAdapter();
-
+                startServiceDiscovery();
 
             }else if(BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)){
                 /**
@@ -211,6 +211,18 @@ public class ProfileScanningFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void startServiceDiscovery(){
+        Handler delayHandler = new Handler();
+        delayHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Logger.e("Discover service called");
+                if(BluetoothLeService.getConnectionState()==BluetoothLeService.STATE_CONNECTED)
+                    BluetoothLeService.discoverServices();
+            }
+        }, DELAY_PERIOD);
     }
     /**
      * Textwatcher for filtering the list devices
