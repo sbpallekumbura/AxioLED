@@ -441,6 +441,9 @@ public class ProfileScanningFragment extends Fragment {
         Logger.e("Registering receiver in Profile scannng");
         getActivity().registerReceiver(mGattConnectReceiver,
                 Utils.makeGattUpdateIntentFilter());
+        Logger.e("Registering Service Discovery Listner");
+        getActivity().registerReceiver(mServiceDiscoveryListner,
+                Utils.makeGattUpdateIntentFilter());
 
     }
 
@@ -453,6 +456,8 @@ public class ProfileScanningFragment extends Fragment {
         }
         Logger.e("UN Registering receiver in Profile scannng");
         getActivity().unregisterReceiver(mGattConnectReceiver);
+        Logger.e("UN Registering receiver in Service Discovery Listner");
+        getActivity().unregisterReceiver(mServiceDiscoveryListner);
         super.onPause();
     }
 
