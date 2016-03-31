@@ -500,15 +500,7 @@ public class ProfileScanningFragment extends Fragment {
             }
         }
       //  getActivity().unregisterReceiver(mGattConnectReceiver);
-        FragmentManager fragmentManager = getFragmentManager();
-        ServiceDiscoveryFragment serviceDiscoveryFragment = new ServiceDiscoveryFragment();
-        fragmentManager.beginTransaction().remove(getFragmentManager().
-                findFragmentByTag(Constants.PROFILE_SCANNING_FRAGMENT_TAG)).commit();
-        fragmentManager
-                .beginTransaction()
-                .replace(R.id.container, serviceDiscoveryFragment,
-                        Constants.SERVICE_DISCOVERY_FRAGMENT_TAG)
-                .commit();
+
     }
 
     @Override

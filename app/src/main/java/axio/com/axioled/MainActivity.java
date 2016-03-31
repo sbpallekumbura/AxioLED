@@ -224,6 +224,7 @@ public class MainActivity extends Activity {
 
     public void app_state(boolean state)
     {
+        _btnPower.setChecked(state);
         _btnZero.setEnabled(state);
         _btnHalf.setEnabled(state);
         _btnFull.setEnabled(state);
@@ -368,6 +369,7 @@ public class MainActivity extends Activity {
             _connected = extras.getBoolean("connected");
             if(_connected)
             {
+                Enabled(true);
                 app_state(true);
             }
         }
